@@ -28,26 +28,28 @@ inline void setIndicator(bool lit) {
 bool magnetFound = false;
 
 ISR(INT0_vect,ISR_NOBLOCK) {
+    magnetFound = !magnetFound;
+
     if (magnetFound) {
+        // External interrupt on rising edge.
+        MCUCR |= BV(ISC01) | BV(ISC00);
+        //DmxSimple.write(1,0x00);
+        setIndicator(true);
+    }
+    else {
         // External interrupt on falling edge.
         MCUCR |= BV(ISC01);
         MCUCR &= ~BV(ISC00);
-        DmxSimple.write(1,0x00);
+        //DmxSimple.write(1,0xff);
+        setIndicator(false);
     }
-    else {
-        // External interrupt on rising edge.
-        MCUCR |= BV(ISC01) | BV(ISC00);
-        DmxSimple.write(1,0xff);
-    }
-
-    magnetFound = !magnetFound;
 }
 
 int main() {
 
     // Set output pins
-    //    B0 (indicator)
-    //    dmx output is set by library
+    //    B0 (power led driver)
+    //    B1 (dmx output) is set by library
     DDRB |= BV(DDB0);
 
     // Enable external interrupt
@@ -55,21 +57,21 @@ int main() {
 
     // Initialize dmx
     Attiny45::setTimer0Prescaler(DMX_PRESCALER);
-    DmxSimple.maxChannel(DMX_CHANNELS);
+    //DmxSimple.maxChannel(DMX_CHANNELS);
     sei();
 
     // Set color balance: all full on (to be modulated with master dimming)
-    DmxSimple.write(2, 0xff);
-    DmxSimple.write(3, 0xff);
-    DmxSimple.write(4, 0xff);
-    DmxSimple.write(5, 0xff);
+    //DmxSimple.write(2, 0xff);
+    //DmxSimple.write(3, 0xff);
+    //DmxSimple.write(4, 0xff);
+    //DmxSimple.write(5, 0xff);
 
     // Start with light off
-    DmxSimple.write(1, 0x00);
+    //DmxSimple.write(1, 0x00);
 
     // Set auto/sound mode and stroboscope off
-    DmxSimple.write(6, 0x00);
-    DmxSimple.write(7, 0x00);
+    //DmxSimple.write(6, 0x00);
+    //DmxSimple.write(7, 0x00);
 
     _delay_ms(500);
 
@@ -80,9 +82,11 @@ int main() {
         counter += 1;
         _delay_ms(LOOP_DELAY);
 
+        /*
         if(counter % INDICATOR_HALF_PERIOD == 0) {
             indicatorLit = !indicatorLit;
             setIndicator(indicatorLit);
         }
+        */
     }
 }
