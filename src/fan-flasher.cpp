@@ -22,36 +22,22 @@ inline void setIndicator(bool lit) {
     }
 }
 
-
-bool magnetFound = false;
-
 ISR(INT0_vect,ISR_NOBLOCK) {
-    magnetFound = !magnetFound;
-
-    if (magnetFound) {
-        // External interrupt on rising edge.
-        MCUCR |= BV(ISC01) | BV(ISC00);
-        //DmxSimple.write(1,0x00);
-        setIndicator(true);
-    }
-    else {
-        // External interrupt on falling edge.
-        MCUCR |= BV(ISC01);
-        MCUCR &= ~BV(ISC00);
-        //DmxSimple.write(1,0xff);
-        setIndicator(false);
-    }
+    PORTB |= BV(PORTB3);
+    _delay_ms(FLASH_LENGTH);
+    PORTB &= ~BV(PORTB3);
 }
 
 int main() {
 
     // Set output pins
-    //    B0 (power led driver)
-    //    B1 (indicator)
-    DDRB |= BV(DDB0);
+    //    B0 (indicator)
+    //    B3 (power led driver)
+    DDRB |= BV(DDB0) | BV(DDB3);
 
-    // Enable external interrupt
+    // Enable external interrupt on falling edge.
     GIMSK |= BV(INT0);
+    MCUCR |= BV(ISC01);
     sei();
 
     bool indicatorLit = false;
