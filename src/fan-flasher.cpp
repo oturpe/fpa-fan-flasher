@@ -8,10 +8,8 @@
 #include <util/delay.h>
 #include <avr/interrupt.h>
 
-#include "lib/DmxSimple/DmxSimple.h"
-
 // \brief
-///    Turns th indicator led on of off
+///    Turns the indicator led on or off
 ///
 /// \param lit
 ///    If led is turned on. Otherwise it is turned off.
@@ -54,9 +52,6 @@ int main() {
 
     // Enable external interrupt
     GIMSK |= BV(INT0);
-
-    // Initialize dmx
-    Attiny45::setTimer0Prescaler(DMX_PRESCALER);
     sei();
 
     bool indicatorLit = false;

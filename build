@@ -1,6 +1,5 @@
 projectName=fan-flasher
 sourceDir=src
-libDir=src/lib/DmxSimple
 targetDir=target
 mcu=attiny45
 programmer=arduinoisp
@@ -9,7 +8,7 @@ if [ ! -e ${targetDir} ]; then
   mkdir ${targetDir}
 fi
 
-avr-gcc -Os -mmcu=${mcu} -o ${targetDir}/${projectName}.out ${sourceDir}/*.cpp ${libDir}/*.cpp
+avr-gcc -Os -mmcu=${mcu} -o ${targetDir}/${projectName}.out ${sourceDir}/*.cpp
 if [ $? -ne 0 ]; then
   echo "Build failed"
   exit 0
