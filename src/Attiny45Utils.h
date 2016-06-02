@@ -27,7 +27,16 @@ enum TimerPrescalerValue {
     PSV_16384
 };
 
-/// Sets timer 0 prescaler to requested value.
+enum ExternalInterruptMode {
+    EIM_DISABLED,
+    EIM_LOW,
+    EIM_CHANGE,
+    EIM_FALLING,
+    EIM_RISING
+};
+
+/// \brief
+///    Sets timer 0 prescaler to requested value.
 ///
 /// This function assumes that Clock Select bits have not been touched yet. Note
 /// that timer 0 does not support all Timer0PrescalerValue values. If illegal
@@ -37,7 +46,8 @@ enum TimerPrescalerValue {
 ///    Requested prescaler value
 void setTimer0Prescaler(TimerPrescalerValue value);
 
-/// Sets timer 1 prescaler to requested value.
+/// \brief
+///    Sets timer 1 prescaler to requested value.
 ///
 /// This function assumes that Clock Select bits have not been touched yet.
 /// Timer 1 support all listed prescaler values.
@@ -45,6 +55,13 @@ void setTimer0Prescaler(TimerPrescalerValue value);
 /// \param value
 ///    Requested prescaler value
 void setTimer1Prescaler(TimerPrescalerValue value);
+
+/// \brief
+///    Sets external interrupt to selected mode
+///
+/// \param mode
+///    External interrupt mode
+void setExternalInterrupt(ExternalInterruptMode mode);
 
 }
 

@@ -2,11 +2,14 @@
 #define F_CPU 1000000
 
 // Half of delay in main execution loop, given in milliseconds
-#define LOOP_DELAY 120
+#define LOOP_DELAY 1
 
 // Half length of indicator led on-off sequence. In other words, the time
 // the indicator is lit and darkened. Given in units of LOOP_DELAY.
-#define INDICATOR_HALF_PERIOD 4
+#define INDICATOR_HALF_PERIOD 400
 
-// The length of one flash. Given in millisenconds.
-#define FLASh_LENGTH
+// The length of one flash. Given in units of LOOP_DELAY.
+#define FLASH_LENGTH_PRESCALER Attiny45::PSV_1
+#define FLASH_UNIT 64
+#define FLASH_LENGTH 20
+#define FLASH_DELAY 300

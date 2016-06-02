@@ -15,17 +15,32 @@
 ///    If led is turned on. Otherwise it is turned off.
 inline void setIndicator(bool lit) {
     if (lit) {
-        PORTB |= BV(PORTB0);
+        //PORTB |= BV(PORTB0);
     }
     else {
         PORTB &= ~BV(PORTB0);
     }
 }
 
+uint16_t flashCounter = 0;
+uint16_t flashDelay = FLASH_DELAY;
+uint16_t rotationCounter;
+
 ISR(INT0_vect,ISR_NOBLOCK) {
-    PORTB |= BV(PORTB3);
-    _delay_ms(FLASH_LENGTH);
-    PORTB &= ~BV(PORTB3);
+    flashCounter = FLASH_LENGTH;
+    flashDelay = FLASH_DELAY;
+}
+
+ISR(TIMER0_COMPA_vect, ISR_NOBLOCK) {
+    if((flashCounter == FLASH_LENGTH) && (flashDelay > 0)) {
+        flashDelay--;
+    }
+    else if (flashCounter > 0) {
+        PORTB |= BV(PORTB3);
+        flashCounter--;
+    } else {
+        PORTB &= ~BV(PORTB3);
+    }
 }
 
 int main() {
@@ -36,12 +51,18 @@ int main() {
     DDRB |= BV(DDB0) | BV(DDB3);
 
     // Enable external interrupt on falling edge.
-    GIMSK |= BV(INT0);
-    MCUCR |= BV(ISC01);
+    Attiny45::setExternalInterrupt(Attiny45::EIM_FALLING);
     sei();
+
+    // Initialize timer interrupt
+    TCCR0A |= BV(WGM01);
+    TIMSK |= BV(OCIE0A);
+    Attiny45::setTimer0Prescaler(FLASH_LENGTH_PRESCALER);
+    OCR0A = FLASH_UNIT;
 
     bool indicatorLit = false;
     uint64_t counter = 0;
+    bool flashOn = false;
 
     while(true) {
         counter += 1;

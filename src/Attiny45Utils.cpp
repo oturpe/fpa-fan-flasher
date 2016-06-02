@@ -76,4 +76,30 @@ void setTimer1Prescaler(TimerPrescalerValue value) {
     }
 }
 
+void setExternalInterrupt(ExternalInterruptMode mode) {
+    switch (mode) {
+    case EIM_DISABLED:
+        GIMSK &= ~BV(INT0);
+        return;
+    case EIM_LOW:
+        GIMSK |= BV(INT0);
+        MCUCR &= ~BV(ISC00) & ~BV(ISC01);
+        return;
+    case EIM_CHANGE:
+        GIMSK |= BV(INT0);
+        MCUCR |= BV(ISC00);
+        MCUCR &= ~BV(ISC01);
+        return;
+    case EIM_FALLING:
+        GIMSK |= BV(INT0);
+        MCUCR |= BV(ISC01);
+        MCUCR &= ~BV(ISC00);
+        return;
+    case EIM_RISING:
+        GIMSK |= BV(INT0);
+        MCUCR |= BV(ISC00) | BV(ISC01);
+        return;
+    }
+}
+
 }
