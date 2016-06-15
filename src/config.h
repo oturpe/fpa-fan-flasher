@@ -11,5 +11,5 @@
 // The length of one flash. Given in units of LOOP_DELAY.
 #define FLASH_LENGTH_PRESCALER Attiny45::PSV_1
 #define FLASH_UNIT 64
-#define FLASH_LENGTH 20
+#define FLASH_LENGTH 40
 #define FLASH_DELAY 300
